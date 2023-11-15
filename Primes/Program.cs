@@ -34,7 +34,10 @@ namespace Vsite.Pood
         // From the book "Agile Principles, Patterns and Practices in C#", by Robert C. Martin
         public static int[] GeneratePrimeNumbers(int maxValue)
         {
-            if (maxValue >= 2)
+            if (maxValue < 2)
+            {
+                return new int[0];
+            }
             {
                 // declarations
                 int s = maxValue + 1; // size of array
@@ -69,6 +72,7 @@ namespace Vsite.Pood
 
                 int[] primes = new int[count];
 
+
                 // move primes into the result
                 for (i = 0, j = 0; i < s; ++i)
                 {
@@ -76,9 +80,6 @@ namespace Vsite.Pood
                         primes[j++] = i;
                 }
                 return primes; // return the primes
-            }
-            else // if maxValue < 2
-                return new int[0]; // return empty array
-        }
+            }        }
     }
 }
