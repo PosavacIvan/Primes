@@ -19,7 +19,7 @@ namespace Vsite.Pood
             Console.ReadKey(true);
             var primeNumbers = GeneratePrimeNumbers(maxValue);
             if (primeNumbers.Length == 0)
-            { 
+            {
                 Console.WriteLine("No primes");
             }
             else
@@ -30,7 +30,7 @@ namespace Vsite.Pood
                 }
             }
         }
-        
+
         private static bool[] crossed; // flags for prime numbers
         private static int[] primes;
 
@@ -65,15 +65,11 @@ namespace Vsite.Pood
         private static void CrossOutMultiples()
         {
             // sieve up to square root of maxValue 
-            for (int i = 2; i < Math.Sqrt(crossed.Length) + 1; ++i)
+            for (int i = 2; i < CalcLargestCommonFactor(); ++i)
             {
                 if (NotCrossed(i)) // if i is uncrossed, cross its multiples (multiples are not primes)
                 {
-                    for (int j = 2 * i; j < crossed.Length; j += i)
-                    {
-                        crossed[j] = true; // multiple is not a prime
-                    }
-
+                    CrossOutMultiplesOf(i);
                 }
             }
         }
@@ -84,6 +80,14 @@ namespace Vsite.Pood
             return (int)commonFactor;
         }
 
+        private static void CrossOutMultiplesOf(int i)
+        {
+            for (int j = 2 * i; j < crossed.Length; j += i)
+            {
+                crossed[j] = true; // multiple is not a prime
+            }
+        }
+
         private static bool NotCrossed(int i)
         {
             return !crossed[i];
@@ -92,16 +96,7 @@ namespace Vsite.Pood
         private static void CollectUncrossedIntegers()
         {
             // how many primes?
-            int count = 0;
-            for (int i = 2; i < crossed.Length; ++i)
-            {
-                if (NotCrossed(i))
-                {
-                    ++count;
-                }
-                    
-            }
-
+            int count = GetNumberOfUncrossed();
             primes = new int[count];
 
 
@@ -112,8 +107,21 @@ namespace Vsite.Pood
                 {
                     primes[j++] = i;
                 }
-                    
+
             }
+        }
+
+        private static int GetNumberOfUncrossed()
+        {
+            int count = 0;
+            for (int i = 2; i < crossed.Length; ++i)
+            {
+                if (NotCrossed(i))
+                {
+                    ++count;
+                }
+            }
+            return count;
         }
     }
 }
