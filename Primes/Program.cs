@@ -31,7 +31,7 @@ namespace Vsite.Pood
             }
         }
         
-        private static bool[] f; // flags for prime numbers
+        private static bool[] crossed; // flags for prime numbers
         private static int[] primes;
 
         // From the book "Agile Principles, Patterns and Practices in C#", by Robert C. Martin
@@ -51,13 +51,51 @@ namespace Vsite.Pood
             return primes; // return the primes
         }
 
+        private static void GenerateArrayOfFlags(int maxValue)
+        {
+            crossed = new bool[maxValue + 1];
+
+            // initialize array to true
+            for (int i = 2; i < crossed.Length; ++i)
+            {
+                crossed[i] = false;
+            }
+        }
+
+        private static void CrossOutMultiples()
+        {
+            // sieve up to square root of maxValue 
+            for (int i = 2; i < Math.Sqrt(crossed.Length) + 1; ++i)
+            {
+                if (NotCrossed(i)) // if i is uncrossed, cross its multiples (multiples are not primes)
+                {
+                    for (int j = 2 * i; j < crossed.Length; j += i)
+                    {
+                        crossed[j] = true; // multiple is not a prime
+                    }
+
+                }
+            }
+        }
+
+        private static int CalcLargestCommonFactor()
+        {
+            var commonFactor = Math.Sqrt(crossed.Length) + 1;
+            return (int)commonFactor;
+        }
+
+        private static bool NotCrossed(int i)
+        {
+            return !crossed[i];
+        }
+
         private static void CollectUncrossedIntegers()
         {
             // how many primes?
             int count = 0;
-            for (int i = 0; i < f.Length; ++i)
+            for (int i = 2; i < crossed.Length; ++i)
             {
-                if (f[i])
+                if (NotCrossed(i))
                 {
                     ++count;
                 }
@@ -68,46 +106,15 @@ namespace Vsite.Pood
 
 
             // move primes into the result
-            for (int i = 0, j = 0; i < f.Length; ++i)
+            for (int i = 2, j = 0; i < crossed.Length; ++i)
             {
-                if (f[i])
+                if (NotCrossed(i))
                 {
                     primes[j++] = i;
                 }
                     
             }
         }
-
-        private static void CrossOutMultiples()
-        {
-            // sieve up to square root of maxValue 
-            for (int i = 2; i < Math.Sqrt(f.Length) + 1; ++i)
-            {
-                if (f[i]) // if i is uncrossed, cross its multiples (multiples are not primes)
-                {
-                    for (int j = 2 * i; j < f.Length; j += i)
-                    {
-                        f[j] = false; // multiple is not a prime
-                    }
-                        
-                }
-            }
-        }
-
-        private static void GenerateArrayOfFlags(int maxValue)
-        {
-            f = new bool[maxValue + 1];
-
-            // initialize array to true
-            for (int i = 0; i < f.Length; ++i)
-            {
-                f[i] = true;
-            }
-                
-
-            // get rid of known non-primes 0 and 1
-            f[0] = f[1] = false;
-        }
     }
-    }
+}
 
